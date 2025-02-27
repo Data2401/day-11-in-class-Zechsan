@@ -1,6 +1,6 @@
 ---
 title: "Dataframes - In Class lab"
-author: "Dr. Shoemaker"
+author: "Gaspar Sanchez"
 date: "DATA 2401"
 output: html_document
 ---
@@ -30,7 +30,7 @@ Because you're in an RProject, you don't need to set your working directory in R
 - Use the glimpse function to look at the loaded data
 
 ```{r}
-
+glimpse(grants)
 
 ```
 
@@ -38,7 +38,7 @@ Because you're in an RProject, you don't need to set your working directory in R
 - Create a variable `org` that contains the `organization` column of the dataset
 
 ```{r}
-
+org<- grants$organization
 
 ```
 
@@ -46,7 +46,7 @@ Because you're in an RProject, you don't need to set your working directory in R
 - Confirm that the "organization" column is a vector using the `is.vector()` function. (This is a useful debugging tip if you hit errors later!)
 
 ```{r}
-
+is.vector(org)
 
 ```
 
@@ -56,28 +56,29 @@ Now you can ask some interesting questions about the dataset:
 - What was the mean grant value?
 
 ```{r}
-
+mean(grants$total_amount)
 ```
 
 
 - What was the dollar amount of the largest grant?
 
 ```{r}
-
+max(grants$total_amount)
 ```
 
 
 - What was the dollar amount of the smallest grant?
 
 ```{r}
-
+min(grants$total_amount)
 ```
 
 
 - Which organization received the largest grant?
 
 ```{r}
-
+max(grants$total_amount,org)
+filter(grants,grants$total_amount == max(grants$total_amount))
 
 ```
 
@@ -85,19 +86,22 @@ Now you can ask some interesting questions about the dataset:
 - Which organization received the smallest grant?
 
 ```{r}
+min(grants$total_amount,org)
+filter(grants,grants$total_amount == min(grants$total_amount))
 
 ```
 
 - How many grants were awarded in 2010?
 
 ```{r}
-
+sum(grants$start_year ==2010)
+filter(grants, grants$start_year ==2010)
 ```
 
 - How much was awarded in 2010? 
 
 ```{r}
-
+sum(grants$total_amount[grants$start_year==2010])
 ```
 
 
@@ -123,13 +127,14 @@ Luckily, you can pass the USPersonalExpenditure variable as an argument to the `
 Do this, storing the result in a new variable
 
 ```{r}
-
+USPersonalExpenditure<-data.frame(USPersonalExpenditure)
+USPersonalExpenditure
 ```
 
 
 What are the current column names of your dataframe?
 ```{r}
-
+colnames(USPersonalExpenditure)
 ```
 
 
@@ -137,32 +142,34 @@ Consider: why are they so strange? (Think about whether you could use a number l
 
 What are the current row names of your dataframe?
 ```{r}
-
+row.names(USPersonalExpenditure)
 ```
 
 
 Add a column "Category" to your data frame that contains the rownames
 
 ```{r}
+USPersonalExpenditure<-rownames_to_column(USPersonalExpenditure,var='Category')
 
 ```
+
 
 Consider how this data isn't tidy. Use the `pivot_longer()` function from last class to make the data tidy. 
 
 ```{r}
-
+pivot_longer(USPersonalExpenditure,cols = Category)
 ```
 
 
 How much money was spent on personal care in 1940?
 ```{r}
-
+filter(USPersonalExpenditure,USPersonalExpenditure$Category== "Personal Care")
 ```
 
 
 How much money was spent on Food and Tobacco in 1960?
 ```{r}
-
+filter(USPersonalExpenditure,USPersonalExpenditure$Category== "Food and Tobacco")
 
 ```
 
@@ -170,19 +177,22 @@ How much money was spent on Food and Tobacco in 1960?
 What was the highest expenditure category in 1960?
 ```{r}
 
-
+filter(USPersonalExpenditure, USPersonalExpenditure$X1960==max(USPersonalExpenditure$X1960))
 ```
 
 
 Define a function `lowest_category` that takes in a year as a parameter, and returns the lowest spending category of that year
 ```{r}
-
+lowest_category<-function(year){
+ filter(USPersonalExpenditure,USPersonalExpenditure$year== min(USPersonalExpenditure$year))
+  
+}
 
 
 ```
 
 ```{r}
-
+lowest_category(X1940)
 ```
 
 
